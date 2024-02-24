@@ -25,6 +25,7 @@
 import {reactive, ref} from "vue";
   import axios from "axios";
 import type {FormRules} from "element-plus";
+import type { FieldError } from '@/custom-types/fieldError'
 
   const PasswordForm=ref({
       originPassword:'',
@@ -41,9 +42,16 @@ import type {FormRules} from "element-plus";
         withCredentials:true
      });
        alert("비밀번호 변경 성공");
-     }catch(error){
-       console.log(error);
-       alert("비밀번호 변경 실패");
+     }catch(error:any){
+       if(error.response) {
+         const errorData = error.response.data;
+         alert(`비밀번호 변경 실패: ${errorData.message}`);
+         if (errorData.errors.length > 0) {
+           errorData.errors.forEach((fieldError: FieldError) => {
+             alert(`${fieldError.field}: ${fieldError.reason}`)
+           });
+         }
+       }
      }
   }
   const validateOriginPassword = (rule:any,value: any, callback: any)=>{

@@ -9,7 +9,7 @@
     | 작성일: {{post.createdAt}}
   </el-row>
   <el-row :style="{minHeight:'300px'}">
-    <h3>{{post.content}}</h3>
+    <h5 style="white-space: pre-line;">{{post.content}}</h5>
   </el-row>
   <el-row class="d-flex justify-content-center align-items-center mb-2">
     <el-button type="primary" @click="onPostLike" plain>추천</el-button>
@@ -69,6 +69,7 @@ import axios from "axios";
 import {usePostsStore} from "@/stores/posts";
 import {useAuthStore} from "@/stores/auth";
 import {useRoute, useRouter} from "vue-router";
+import type { FieldError } from '@/custom-types/fieldError'
 
 const postsStore=usePostsStore();
 const authStore=useAuthStore();
@@ -105,7 +106,8 @@ const post=ref({
   viewCnt:0,
   likeCnt:0,
   createdAt:'',
-  authorId:0
+  authorId:0,
+  commentNum:0
 })
 
 const comments=ref([{
@@ -143,6 +145,7 @@ onMounted(async ()=> {
 
 const editPost=()=>{
   postsStore.setPostId(post.value.id);
+  postsStore.setPost(post.value);
   router.push({name:'post-edit',params:{postId:post.value.id}});
 }
 
@@ -152,8 +155,9 @@ const onPostLike=async function (){
       withCredentials: true
     });
     post.value.likeCnt=likes.data.likeCnt;
-  }catch (error){
-    alert("추천 불가능");
+  }catch (error:any){
+    const errorData=error.response.data;
+    alert(`추천 불가능:${errorData.message}`);
   }
 }
 const onPostDisLike=async function (){
@@ -162,8 +166,9 @@ const onPostDisLike=async function (){
       withCredentials: true
     });
     post.value.likeCnt=likes.data.likeCnt;
-  }catch (error){
-    alert("비추천 불가능");
+  }catch (error:any){
+    const errorData=error.response.data;
+    alert(`비추천 불가능:${errorData.message}`);
   }
 }
 
@@ -176,8 +181,9 @@ const onPostDelete= async function (){
     alert("게시글 삭제 완료");
     router.replace({name:'home'});
 
-  }catch (error){
-    alert("삭제 실패");
+  }catch (error:any){
+    const errorData=error.response.data;
+    alert(`게시글 삭제 실패:${errorData.message}`);
   }
 }
 
@@ -191,13 +197,15 @@ const onCommentWrite=async function () {
     writeContent.value.content= '';
     comments.value=commentResponseDto.commentListItems;
     commentsNum.value=commentResponseDto.commentsNum;
-  }catch (error){
+  }catch (error:any){
+    const errorData=error.response.data;
     console.log(error);
-    alert("댓글 작성 실패");
+    alert(`댓글 작성 실패:${errorData.message}`);
   }
 }
 const toggleCommentEdit= function(comment:any){
   comment.isEdit= !comment.isEdit;
+  editContent.value.content=comment.content
 }
 const onCommentEdit=async function(comment:any){
   try{
@@ -209,8 +217,10 @@ const onCommentEdit=async function(comment:any){
     editContent.value.content= '';
     comments.value=commentResponseDto.commentListItems;
     commentsNum.value=commentResponseDto.commentsNum;
-  }catch (error){
-    alert("댓글 수정 실패");
+  }catch (error:any){
+    const errorData=error.response.data;
+    console.log(error);
+    alert(`댓글 수정 실패:${errorData.message}`);
   }
 }
 
@@ -226,8 +236,16 @@ const onCommentDelete=async function (comment:any){
     comments.value=commentResponseDto.commentListItems;
     commentsNum.value=commentResponseDto.commentsNum;
   }
-  catch (error){
-    alert("댓글 삭제 실패");
+  catch (error:any){
+    if(error.response) {
+      const errorData = error.response.data;
+      alert(`댓글 작성 실패: ${errorData.message}`);
+      if (errorData.errors.length > 0) {
+        errorData.errors.forEach((fieldError: FieldError) => {
+          alert(`${fieldError.field}: ${fieldError.reason}`)
+        });
+      }
+    }
   }
 }
 

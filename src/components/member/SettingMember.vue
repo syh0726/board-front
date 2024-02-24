@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, ref} from "vue";
   import axios from "axios";
+import type { FieldError } from '@/custom-types/fieldError'
 
   const SettingMember =ref({
     email:'',
@@ -52,9 +53,16 @@ import {onMounted, onUnmounted, ref} from "vue";
           },
         })
         alert("닉네임 변경 성공!");
-      }catch (error){
-        console.log(error);
-        alert("닉네임 변경 실패");
+      }catch (error:any){
+        if(error.response) {
+          const errorData = error.response.data;
+          alert(`닉네임 변경 실패: ${errorData.message}`);
+          if (errorData.errors.length > 0) {
+            errorData.errors.forEach((fieldError: FieldError) => {
+              alert(`${fieldError.field}: ${fieldError.reason}`)
+            });
+          }
+        }
       }
 
   }
@@ -68,9 +76,16 @@ const onChangePhone=async function (){
       },
     })
     alert("휴대폰 번호 변경 성공!");
-  }catch (error){
-    console.log(error);
-    alert("휴대폰 번호 변경 실패");
+  }catch (error:any){
+    if(error.response) {
+      const errorData = error.response.data;
+      alert(`휴대폰 번호 변경 실패: ${errorData.message}`);
+      if (errorData.errors.length > 0) {
+        errorData.errors.forEach((fieldError: FieldError) => {
+          alert(`${fieldError.field}: ${fieldError.reason}`)
+        });
+      }
+    }
   }
 
 }

@@ -34,17 +34,28 @@
 import { onMounted, ref } from 'vue'
   import axios from "axios";
   import {useRoute, useRouter} from "vue-router";
+import type { FieldError } from '@/custom-types/fieldError'
+import { usePostsStore } from '@/stores/posts'
 
   const router=useRouter();
   const route=useRoute();
+  const postsStore=usePostsStore();
   const postId=route.params.postId;
 
   const postForm=ref({
     title:'',
     content:'',
-    category:'FREE',
+    category:postsStore.getCategory,
   })
 
+  if(route.name==='post-edit') {
+    onMounted(() => {
+      const post = postsStore.getPost;
+      postForm.value.title = post.title;
+      postForm.value.content = post.content;
+      console.log(post);
+    });
+  }
 
 
   const onWrite= async function() {
@@ -60,8 +71,16 @@ import { onMounted, ref } from 'vue'
         });
       }
       router.replace({name: "home"})
-    }catch (error){
-      alert("작성 실패");
+    }catch (error:any){
+      if(error.response) {
+        const errorData = error.response.data;
+        alert(`게시글 작성 실패: ${errorData.message}`);
+        if (errorData.errors.length > 0) {
+          errorData.errors.forEach((fieldError: FieldError) => {
+            alert(`${fieldError.field}: ${fieldError.reason}`)
+          });
+        }
+      }
     }
   }
 

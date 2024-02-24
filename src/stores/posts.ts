@@ -3,6 +3,7 @@ import type {Post} from "@/custom-types/post";
 
 export const usePostsStore=defineStore("post",{
     state:() =>({
+        post:null as Post| any,
         posts:[] as Post[],
         postId:0,
         category:'FREE',
@@ -16,6 +17,9 @@ export const usePostsStore=defineStore("post",{
         },
         getPosts:(state)=>{
             return state.posts;
+        },
+        getPost:(state)=>{
+            return state.post;
         }
     },
     actions: {
@@ -27,6 +31,9 @@ export const usePostsStore=defineStore("post",{
         },
         addPost(p:Post[]){
             this.posts.push(...p);
+        },
+        setPost(p:Post){
+            this.post=p;
         },
         clean(){
             this.posts=[];

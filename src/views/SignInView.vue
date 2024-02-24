@@ -29,6 +29,7 @@ import {useRouter} from "vue-router";
 import {reactive, ref} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import type {FormRules} from "element-plus";
+import type { FieldError } from '@/custom-types/fieldError'
 
 const signinForm=ref({
   email:'',
@@ -43,9 +44,16 @@ const onSignIn= async function() {
     const response=await axios.post("api/auth/signin", signinForm.value);
     authStore.login(response.data);
     router.replace({name: "home"});
-  }catch(error){
-    alert("로그인 실패");
-    console.error("실패")
+  }catch(error:any){
+    if(error.response) {
+      const errorData = error.response.data;
+      alert(`로그인 실패: ${errorData.message}`);
+      if (errorData.errors.length > 0) {
+        errorData.errors.forEach((fieldError: FieldError) => {
+          alert(`${fieldError.field}: ${fieldError.reason}`)
+        });
+      }
+    }
   }
 };
 

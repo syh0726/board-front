@@ -42,6 +42,7 @@ import {reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import axios from "axios";
 import type {FormRules} from "element-plus";
+import type {FieldError} from '@/custom-types/fieldError';
 
 const router=useRouter();
 const checkForm=ref(false);
@@ -115,12 +116,16 @@ const onSignUp= async function () {
     await axios.post("api/auth/signup", signupForm.value);
     window.alert("회원가입이 완료되었습니다.")
     router.replace({name: "home"});
-  }catch (error){
-    alert("이메일 형식이 일치하는지 확인해주세요.\n\n" +
-        "비밀번호는 8~15 글자 이내 형식입니다.\n\n" +
-        "닉네임은 2~16글자 이내 형시입니다.\n\n" +
-        "전화 번호 형식이 일치하는지 확인해주세요.\n\n"
-    );
+  }catch (error:any){
+    if(error.response) {
+      const errorData = error.response.data;
+      alert(`회원가입 실패:${errorData.message}`);
+      if (errorData.errors.length > 0) {
+        errorData.errors.forEach((fieldError: FieldError) => {
+          alert(`${fieldError.field}: ${fieldError.reason}`)
+        });
+      }
+    }
   }
 };
 
