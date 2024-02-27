@@ -28,6 +28,7 @@ import {usePostsStore} from "@/stores/posts";
   onMounted(()=>{
     maxPage.value=pageStore.getMaxPage;
     currentPage.value=pageStore.getCurrentPage;
+    //console.log(currentPage.value);
   })
 
   const onPaging =async (page:number) => {

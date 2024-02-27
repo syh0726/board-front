@@ -36,6 +36,7 @@ import { onMounted, ref } from 'vue'
   import {useRoute, useRouter} from "vue-router";
 import type { FieldError } from '@/custom-types/fieldError'
 import { usePostsStore } from '@/stores/posts'
+import axiosInstance from '@/api/axios'
 
   const router=useRouter();
   const route=useRoute();
@@ -62,11 +63,11 @@ import { usePostsStore } from '@/stores/posts'
     try {
       if(route.name==='post-edit'){
         console.log(postId);
-        await axios.patch(`/api/posts/${postId}`,postForm.value,{
+        await axiosInstance.patch(`/posts/${postId}`,postForm.value,{
           withCredentials: true
         });
       }else {
-        await axios.post("/api/posts/new", postForm.value, {
+        await axiosInstance.post("/posts/new", postForm.value, {
           withCredentials: true
         });
       }

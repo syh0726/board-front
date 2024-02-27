@@ -70,6 +70,7 @@ import {usePostsStore} from "@/stores/posts";
 import {useAuthStore} from "@/stores/auth";
 import {useRoute, useRouter} from "vue-router";
 import type { FieldError } from '@/custom-types/fieldError'
+import axiosInstance from '@/api/axios';
 
 const postsStore=usePostsStore();
 const authStore=useAuthStore();
@@ -131,7 +132,7 @@ const commentsNum=ref(0);
 
 onMounted(async ()=> {
   try {
-    const response = await axios.get(`/api/posts/${postId}`);
+    const response = await axiosInstance.get(`/posts/${postId}`);
     const postResponseDto = response.data;
     const commentResponseDto=postResponseDto.commentListResponseDto;
     post.value=postResponseDto.postResponseData;
@@ -151,7 +152,7 @@ const editPost=()=>{
 
 const onPostLike=async function (){
   try {
-    const likes=await axios.post(`/api/posts/${postId}/like`, {}, {
+    const likes=await axiosInstance.post(`/posts/${postId}/like`, {}, {
       withCredentials: true
     });
     post.value.likeCnt=likes.data.likeCnt;
@@ -162,7 +163,7 @@ const onPostLike=async function (){
 }
 const onPostDisLike=async function (){
   try {
-    const likes=await axios.post(`/api/posts/${postId}/dislike`, {}, {
+    const likes=await axiosInstance.post(`/posts/${postId}/dislike`, {}, {
       withCredentials: true
     });
     post.value.likeCnt=likes.data.likeCnt;
@@ -174,7 +175,7 @@ const onPostDisLike=async function (){
 
 const onPostDelete= async function (){
   try{
-    await axios.delete(`/api/posts/${postId}`,{
+    await axiosInstance.delete(`/posts/${postId}`,{
       withCredentials: true
     });
 
@@ -189,7 +190,7 @@ const onPostDelete= async function (){
 
 const onCommentWrite=async function () {
   try {
-    const response=await axios.post(`/api/posts/${postId}/comments`,writeContent.value, {
+    const response=await axiosInstance.post(`/posts/${postId}/comments`,writeContent.value, {
       withCredentials: true
     });
     const commentResponseDto=response.data;
@@ -209,7 +210,7 @@ const toggleCommentEdit= function(comment:any){
 }
 const onCommentEdit=async function(comment:any){
   try{
-    const response=await axios.patch(`/api/posts/${postId}/comments/${comment.id}`,editContent.value,{
+    const response=await axiosInstance.patch(`/posts/${postId}/comments/${comment.id}`,editContent.value,{
       withCredentials: true
     })
     const commentResponseDto=response.data;
@@ -227,7 +228,7 @@ const onCommentEdit=async function(comment:any){
 
 const onCommentDelete=async function (comment:any){
   try{
-    const response=await axios.delete(`/api/posts/${postId}/comments/${comment.id}`,{
+    const response=await axiosInstance.delete(`/posts/${postId}/comments/${comment.id}`,{
       withCredentials: true
     })
     const commentResponseDto=response.data;

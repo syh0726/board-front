@@ -24,6 +24,7 @@
 import {onMounted, ref} from "vue";
 import axios from "axios";
 import {useRoute, useRouter} from "vue-router";
+import axiosInstance from '@/api/axios';
 
   const route=useRoute();
   const router=useRouter();
@@ -39,7 +40,7 @@ import {useRoute, useRouter} from "vue-router";
 
 
   onMounted(async ()=>{
-    const response=await axios.get(`/api/member/${memberId}`);
+    const response=await axiosInstance.get(`/member/${memberId}`);
     nickName.value=response.data.nickName;
     activityPosts.value=response.data.postList;
   })

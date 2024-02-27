@@ -43,6 +43,7 @@ import {useRouter} from "vue-router";
 import axios from "axios";
 import type {FormRules} from "element-plus";
 import type {FieldError} from '@/custom-types/fieldError';
+import axiosInstance from '@/api/axios';
 
 const router=useRouter();
 const checkForm=ref(false);
@@ -113,7 +114,7 @@ const rules = reactive<FormRules<typeof signupForm>>({
 })
 const onSignUp= async function () {
   try {
-    await axios.post("api/auth/signup", signupForm.value);
+    await axiosInstance.post("/auth/signup", signupForm.value);
     window.alert("회원가입이 완료되었습니다.")
     router.replace({name: "home"});
   }catch (error:any){

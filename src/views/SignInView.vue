@@ -30,6 +30,7 @@ import {reactive, ref} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import type {FormRules} from "element-plus";
 import type { FieldError } from '@/custom-types/fieldError'
+import axiosInstance from '@/api/axios';
 
 const signinForm=ref({
   email:'',
@@ -41,7 +42,7 @@ const authStore=useAuthStore()
 
 const onSignIn= async function() {
   try {
-    const response=await axios.post("api/auth/signin", signinForm.value);
+    const response=await axiosInstance.post("/auth/signin", signinForm.value);
     authStore.login(response.data);
     router.replace({name: "home"});
   }catch(error:any){

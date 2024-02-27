@@ -23,11 +23,13 @@
   import {useAuthStore} from "@/stores/auth";
   import { Search } from '@element-plus/icons-vue'
   import {useRouter} from "vue-router";
-  import {onBeforeMount, onMounted, onUnmounted, provide, ref} from "vue";
+  import {onBeforeMount, provide, ref} from "vue";
   import PostList from "@/components/post/PostList.vue";
   import axios from "axios";
   import {usePostsStore} from "@/stores/posts";
   import {usePageStore} from "@/stores/page";
+  import axiosInstance from '@/api/axios';
+
 
   const auth=useAuthStore();
   const postsStore=usePostsStore();
@@ -41,8 +43,8 @@
 
   //마운트 되기전에 게시글을 불러옴
   onBeforeMount(async ()=> {
-    await onGetPosts();
     pageStore.setCurrentPage(1);
+    await onGetPosts();
   });
 
   const onGetPosts=async function (){
@@ -50,7 +52,7 @@
       const category=selectCategory.value;
       const page=pageStore.getCurrentPage;
       const path=`?page=${page}&condition=${select.value}&keyword=${search.value}`;
-      const response = await axios.get(`/api/${category}`+path);
+      const response = await axiosInstance.get(`/${category}`+path);
       const postResponseDto = response.data;
       postsStore.clean();
       postsStore.addPost(postResponseDto.postListItems);

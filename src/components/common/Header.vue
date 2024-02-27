@@ -25,6 +25,7 @@
   import {ref} from "vue";
   import axios from "axios";
   import {usePostsStore} from "@/stores/posts";
+  import axiosInstance from '@/api/axios';
 
   const auth=useAuthStore();
   const postsStore=usePostsStore();
@@ -33,16 +34,16 @@
 
 
 
-  const onLogout=function (){
-    axios.post("/api/auth/logout",{},{
-      withCredentials: true
-    }).then((response)=>{
-      console.log("로그아웃 성공")
+  const onLogout=async function (){
+    try{
+      await axiosInstance.post("/auth/logout",{},{
+        withCredentials: true
+      });
       router.push({name:'home'});
       auth.logout();
-    }).catch(()=>{
+    }catch(error){
       console.error("실패")
-    });
+    }
   };
 
   router.afterEach(()=>{

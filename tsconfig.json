@@ -13,7 +13,8 @@
       "pinia-plugin-persist",
       "./@types",
       "./node_modules/@types",
-      "@/custom-types/*"
+      "@/custom-types/*",
+      "@/api/*"
     ]
   }
 }

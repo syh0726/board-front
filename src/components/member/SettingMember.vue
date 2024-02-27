@@ -28,6 +28,7 @@
 import {onMounted, onUnmounted, ref} from "vue";
   import axios from "axios";
 import type { FieldError } from '@/custom-types/fieldError'
+import axiosInstance from '@/api/axios'
 
   const SettingMember =ref({
     email:'',
@@ -37,7 +38,7 @@ import type { FieldError } from '@/custom-types/fieldError'
 
 
   onMounted(async ()=>{
-    const response=await axios.get("/api/auth/profile",{
+    const response=await axiosInstance.get("/auth/profile",{
       withCredentials:true
     });
 
@@ -46,7 +47,7 @@ import type { FieldError } from '@/custom-types/fieldError'
 
   const onChangeNickname=async function (){
       try{
-        await axios.put("/api/auth/setting/nickname",SettingMember.value.nickName,{
+        await axiosInstance.put("/auth/setting/nickname",SettingMember.value.nickName,{
         withCredentials:true,
           headers:{
             'Content-Type':'application/json',
@@ -69,7 +70,7 @@ import type { FieldError } from '@/custom-types/fieldError'
 
 const onChangePhone=async function (){
   try{
-    await axios.put("/api/auth/setting/phone",SettingMember.value.phoneNumber,{
+    await axiosInstance.put("/auth/setting/phone",SettingMember.value.phoneNumber,{
       withCredentials:true,
       headers:{
         'Content-Type':'application/json',

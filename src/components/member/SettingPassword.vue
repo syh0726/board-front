@@ -26,6 +26,7 @@ import {reactive, ref} from "vue";
   import axios from "axios";
 import type {FormRules} from "element-plus";
 import type { FieldError } from '@/custom-types/fieldError'
+import axiosInstance from '@/api/axios';
 
   const PasswordForm=ref({
       originPassword:'',
@@ -38,7 +39,7 @@ import type { FieldError } from '@/custom-types/fieldError'
 
   const onChangePassword = async function (){
      try{
-       await axios.put("/api/auth/setting/password",PasswordForm.value,{
+       await axiosInstance.put("/auth/setting/password",PasswordForm.value,{
         withCredentials:true
      });
        alert("비밀번호 변경 성공");
