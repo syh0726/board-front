@@ -6,3 +6,6 @@ https://blog.naver.com/antlfn123/223345330565
 
 # 게시글 리스트
 https://blog.naver.com/antlfn123/223347200464
+
+# Exception Vue 에서 처리
+https://blog.naver.com/antlfn123/223363410347
