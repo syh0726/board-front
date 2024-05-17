@@ -8,6 +8,12 @@
     | 추천:{{post.likeCnt}}
     | 작성일: {{post.createdAt}}
   </el-row>
+
+    <div v-for="(imgUrl,index) in post.imgUrls" :key="index">
+      <el-row class="mt-2">
+        <img :src="imgUrl" alt=""/>
+      </el-row>
+    </div>
   <el-row :style="{minHeight:'300px'}">
     <h5 style="white-space: pre-line;">{{post.content}}</h5>
   </el-row>
@@ -108,7 +114,8 @@ const post=ref({
   likeCnt:0,
   createdAt:'',
   authorId:0,
-  commentNum:0
+  commentNum:0,
+  imgUrls:[]
 })
 
 const comments=ref([{
@@ -145,6 +152,7 @@ onMounted(async ()=> {
 });
 
 const editPost=()=>{
+  postsStore.postClean;
   postsStore.setPostId(post.value.id);
   postsStore.setPost(post.value);
   router.push({name:'post-edit',params:{postId:post.value.id}});
@@ -236,8 +244,7 @@ const onCommentDelete=async function (comment:any){
     writeContent.value.content = '';
     comments.value=commentResponseDto.commentListItems;
     commentsNum.value=commentResponseDto.commentsNum;
-  }
-  catch (error:any){
+  } catch (error:any){
     if(error.response) {
       const errorData = error.response.data;
       alert(`댓글 작성 실패: ${errorData.message}`);

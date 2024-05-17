@@ -2,8 +2,8 @@ import axios from 'axios'
 
 
 const axiosInstance =axios.create({
-  //baseURL:'http://localhost:8080',
-  baseURL:'https://community-board.store/api',
+  baseURL:'http://localhost:8080',
+  //baseURL:'https://community-board.store/api',
   timeout: 50000,
 });
 

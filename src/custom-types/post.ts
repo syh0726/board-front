@@ -6,4 +6,5 @@ export interface Post {
     viewCnt:number,
     likeCnt:number,
     createdAt:string,
+    imgUrls:string[],
 }

@@ -37,8 +37,10 @@ export const usePostsStore=defineStore("post",{
         },
         clean(){
             this.posts=[];
+        },
+        postClean(){
+            this.post=null;
         }
-
     },persist:{
         storage:sessionStorage,
     },
